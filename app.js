@@ -38,26 +38,29 @@ const moviesList = (req, res) => {
   res.send("Welcome to my favourite movie list");
 };
 
-app.get("/", moviesList);
-// app.get("/movies/:id",getMovies);
-
-app.get("/api/movies", getMovies);
-
-app.get("/api/movies/:id", (req, res) => {
-  const movieId = parseInt(req.params.id);
-  const movie = movies.find((m) => m.id === movieId);
-
-  if (movie) {
-    res.status(200).json(movie);
-  } else {
-    res.status(404).json({ message: "Not Found" });
-  }
-});
-
 app.listen(port, (err) => {
   if (err) {
     console.error("Something bad happened");
   } else {
     console.log(`Server is listening on ${port}`);
   }
+});
+
+app.get("/api/movies", (req, res) => {
+  res.send(movies);
+  console.log(req.query);
+});
+
+app.get("/api/movies/:id", (req, res) => {
+  const result = movies.find((c) => c.id === parseInt(req.params.id));
+  if (!result) res.status(404).send("error");
+  res.send(result);
+});
+
+app.get("/api/title/:title", (req, res) => {
+  const resultat = movies.find((c) => c.title === req.params.title);
+  if (!resultat) {
+    return res.status(404).send("Movie not found");
+  }
+  res.send(resultat);
 });
